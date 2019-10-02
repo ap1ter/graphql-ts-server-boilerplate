@@ -12,14 +12,29 @@ export const resolvers: ResolverMap = {
       _,
       { email, password }: GQL.IRegisterOnMutationArguments
     ) => {
-      const hashedPassword = await bcrypt.hash(password.trim(), 10);
+      email = email.trim().toLowerCase();
+      password = password.trim();
+
+      const alreadyExists = await User.findOne({
+        where: { email },
+        select: ['id']
+      });
+      if (alreadyExists) {
+        return [
+          {
+            path: 'email',
+            message: 'already taken'
+          }
+        ];
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
       const user = User.create({
-        email: email.trim().toLowerCase(),
+        email: email,
         password: hashedPassword
       });
 
-      const saveResult = await user.save();
-      return !!{ id: saveResult.id, email: saveResult.email };
+      await user.save();
+      return null;
     }
   }
 };
