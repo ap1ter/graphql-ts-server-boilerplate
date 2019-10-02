@@ -4,10 +4,14 @@
    "description": "Awesome project developed with TypeORM.",
    "devDependencies": {
       "@types/bcryptjs": "^2.4.2",
+      "@types/jest": "^24.0.18",
       "@types/node": "^12.7.9",
       "@types/uuid": "^3.4.5",
       "gql2ts": "^1.10.1",
+      "graphql-request": "^1.8.2",
+      "jest": "^24.9.0",
       "nodemon": "^1.19.3",
+      "ts-jest": "^24.1.0",
       "ts-node": "8.4.1",
       "tslint": "^5.20.0",
       "tslint-config-prettier": "^1.18.0",
@@ -23,7 +27,22 @@
       "uuid": "^3.3.3"
    },
    "scripts": {
-      "start": "nodemon --exec ts-node src/index.ts",
+      "start": "NODE_ENV=test nodemon --exec ts-node src/index.ts",
+      "test": "NODE_ENV=test jest",
       "gen-schema-types": "gql2ts src/schema.graphql -o src/types/schema.d.ts"
+   },
+   "jest": {
+      "transform": {
+         "^.+\\.tsx?$": "ts-jest"
+      },
+      "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+      "moduleFileExtensions": [
+         "ts",
+         "tsx",
+         "js",
+         "jsx",
+         "json",
+         "node"
+      ]
    }
 }
