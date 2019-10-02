@@ -1,13 +1,26 @@
 import { GraphQLServer } from 'graphql-yoga';
 import { importSchema } from 'graphql-import';
-import { resolvers } from './resolvers';
 import * as path from 'path';
 import { createTypeormConn } from './utils/createConnection';
+import { makeExecutableSchema, mergeSchemas } from 'graphql-tools';
+
+import * as fs from 'fs';
+import { GraphQLSchema } from 'graphql';
 
 export const startServer = async () => {
-  const typeDefs = importSchema(path.join(__dirname, './schema.graphql'));
+  const schemas: GraphQLSchema[] = [];
+  const featuresFolder = 'modules';
+  const folders = fs.readdirSync(path.join(__dirname, `./${featuresFolder}`));
+  folders.forEach(folder => {
+    const { resolvers } = require(`./${featuresFolder}/${folder}/resolvers`);
+    const typeDefs = importSchema(
+      path.join(__dirname, `./${featuresFolder}/${folder}/schema.graphql`)
+    );
 
-  const server = new GraphQLServer({ typeDefs, resolvers });
+    schemas.push(makeExecutableSchema({ resolvers, typeDefs }));
+  });
+
+  const server = new GraphQLServer({ schema: mergeSchemas({ schemas }) });
   await createTypeormConn();
   const app = await server.start({
     port: process.env.NODE_ENV === 'test' ? 0 : 4000

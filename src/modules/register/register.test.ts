@@ -1,6 +1,6 @@
 import request from 'graphql-request';
-import { User } from '../src/entity/User';
-import { startServer } from '../src/startServer';
+import { User } from '../../entity/User';
+import { startServer } from '../../startServer';
 
 const email = 'tom@user.com';
 const password = '1234123';
