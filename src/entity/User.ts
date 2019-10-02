@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import * as uuidv4 from 'uuid/v4';
 
-@Entity()
+@Entity('users')
 export class User extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
@@ -16,7 +16,7 @@ export class User extends BaseEntity {
   email: string;
 
   @Column('text')
-  password: number;
+  password: string;
 
   @BeforeInsert()
   addId() {
